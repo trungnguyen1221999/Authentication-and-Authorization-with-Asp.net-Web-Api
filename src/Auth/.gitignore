@@ -1,0 +1,40 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+
+# Visual Studio
+.vs/
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Logs
+*.log
+logs/
+
+# Test output
+TestResults/
+
+# Local config/secrets (keep template files in source control)
+appsettings.Development.json
+appsettings.Local.json
+
+# EF Core generated SQL/scripts (if any local)
+*.db
+*.db-journal
+
+# OS generated files
+.DS_Store
+Thumbs.db
