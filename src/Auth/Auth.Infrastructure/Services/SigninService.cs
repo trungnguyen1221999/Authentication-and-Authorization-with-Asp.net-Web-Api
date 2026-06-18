@@ -13,11 +13,13 @@ namespace Auth.Infrastructure.Services
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
+        private readonly ITokenService _tokenService;
 
-        public SigninService (UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        public SigninService (UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, ITokenService tokenService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _tokenService = tokenService;
         }
         public async Task<SiginResponseDto> Signin(SigninRequestDto request)
         {
@@ -38,7 +40,7 @@ namespace Auth.Infrastructure.Services
                 return result;
             }
             result.isSuccess = true;
-            result.Token = "token";
+            result.Token = await _tokenService.GenerateTokenAsync(user);
             result.ExpierTime = DateTime.UtcNow.AddDays(1);
 
             return result;

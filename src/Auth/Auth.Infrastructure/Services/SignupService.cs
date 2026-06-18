@@ -27,7 +27,6 @@ namespace Auth.Infrastructure.Services
             }
             var newUser = new AppUser
             {
-                Id = Guid.NewGuid(),
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Email = request.Email,
@@ -36,11 +35,19 @@ namespace Auth.Infrastructure.Services
                 isActive = true
             };
             var createResult = await _userManager.CreateAsync(newUser, request.Password);
+            
             if (!createResult.Succeeded)
             {
                 result.isSuccess = false;
                 var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
                 result.Message = "Failed to create user: " + errors;
+                return result;
+            }
+            var roleResult = await _userManager.AddToRoleAsync(newUser, request.Role.ToString());
+            if (!roleResult.Succeeded)
+            {
+                result.isSuccess = false;
+                result.Message = "Failed to assign role to user";
                 return result;
             }
             result.isSuccess = true;
