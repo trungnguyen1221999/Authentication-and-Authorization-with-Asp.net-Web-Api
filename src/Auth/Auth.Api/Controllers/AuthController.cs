@@ -19,7 +19,7 @@ namespace Auth.Api.Controllers
             _signinService = signinService;
         }
 
-        [HttpPost("/signup")]
+        [HttpPost("signup")]
         public async Task<ActionResult<SignupResponseDto>> SignupAsync([FromBody] SignupRequestDto request)
         {
             var result = await _signupService.Signup(request);
@@ -27,7 +27,7 @@ namespace Auth.Api.Controllers
                 : BadRequest(result);
         }
 
-        [HttpPost("/signin")]
+        [HttpPost("signin")]
         public async Task<ActionResult<SiginResponseDto>> SigninAsync([FromBody] SigninRequestDto request)
         {
             var result = await _signinService.Signin(request);

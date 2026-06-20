@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,22 +50,29 @@ builder.Services.AddScoped<ISignupService, SignupService>();
 builder.Services.AddScoped<ISigninService, SigninService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
-
+builder.Services.AddAuthentication(options =>
 {
-    option.TokenValidationParameters = new TokenValidationParameters
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidIssuer = builder.Configuration.GetSection("JwtSettings:Issuer").Value,
-
+        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
         ValidateAudience = true,
-        ValidAudience = builder.Configuration.GetSection("JwtSettings:Audience").Value,
-
-        ValidateIssuerSigningKey = true
+        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]!)),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
     };
-}
-);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -80,7 +88,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
