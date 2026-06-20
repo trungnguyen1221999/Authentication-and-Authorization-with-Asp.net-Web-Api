@@ -47,6 +47,7 @@ namespace Auth.Infrastructure.Services
             return new Post_Create_Edit_Delete_ResponseDto
             {
                 isSuccess = true,
+                PostId = post.Id
             };
         }
 

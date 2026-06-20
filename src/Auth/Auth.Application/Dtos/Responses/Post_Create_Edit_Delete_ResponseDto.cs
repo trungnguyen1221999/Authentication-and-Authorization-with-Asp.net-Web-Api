@@ -8,5 +8,7 @@ namespace Auth.Application.Dtos.Responses
     {
         public bool isSuccess { get; set; }
         public string? ErrorMessage { get; set; }
+
+        public Guid? PostId { get; set; }
     }
 }

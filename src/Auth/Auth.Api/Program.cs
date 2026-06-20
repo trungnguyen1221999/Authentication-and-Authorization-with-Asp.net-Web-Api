@@ -1,5 +1,6 @@
-using Auth.Application.Services;
+﻿using Auth.Application.Services;
 using Auth.Domain;
+using Auth.Domain.Constants.Claims;
 using Auth.Domain.Cores;
 using Auth.Infrastructure;
 using Auth.Infrastructure.Services;
@@ -70,6 +71,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]!)),
         ValidateLifetime = true,
+        RoleClaimType = UserClaims.Role,   
+        NameClaimType = "sub",
         ClockSkew = TimeSpan.Zero
     };
 });
